@@ -1,5 +1,5 @@
 enum TokenType {
-  NUMBER, HEX, FORW, BACK, UP, DOWN, COLOR, REP, DOT, CIT, INVALID, EOF, RIGHT, LEFT, WHITESPACE, COMMENT, NL
+  NUMBER, HEX, FORW, BACK, UP, DOWN, COLOR, REP, DOT, CIT, INVALID, EOF, RIGHT, LEFT, WHITESPACE
 }
 
 public class Token {
@@ -7,6 +7,7 @@ public class Token {
   public String data;
   public int row;
   public int value;
+  public boolean hasDot = false;
 
   public Token(TokenType type, int row) {
     this.type = type;
@@ -14,16 +15,17 @@ public class Token {
     this.row = row;
   }
 
-  public Token(TokenType type, String data, int row) {
+  public Token(TokenType type, int row, String data) {
     this.type = type;
     this.data = data;
     this.row = row;
   }
 
-  public Token(TokenType type, int value, int row) {
+  public Token(TokenType type, int row, int value, boolean hasDot) {
     this.type = type;
     this.value = value;
     this.row = row;
+    this.hasDot = hasDot;
   }
 
   public TokenType getTokenType(){
@@ -43,7 +45,7 @@ public class Token {
   }
   
   public String toString(){
-    return "Token " + this.type ;
+    return "Token " + type;
   }
 
 }
