@@ -19,8 +19,8 @@ public class Main{
 
       Lexer lexer = new Lexer();
       lexer.generateTokens(sb.toString());
-      // Parser parser = new Parser(lexer);
-      // ParseTree tree = parser.parse();
+      Parser parser = new Parser(lexer);
+      ParseTree tree = parser.parse(); // Error here!
 
       // Evaluator evaluator = new Evaluator(tree);
       // evaluator.evaluate();
