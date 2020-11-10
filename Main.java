@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.File;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.List;
 
 public class Main{
   public static void main(String[] args) throws java.io.IOException{
@@ -20,10 +21,14 @@ public class Main{
       Lexer lexer = new Lexer();
       lexer.generateTokens(sb.toString());
       Parser parser = new Parser(lexer);
-      ParseTree tree = parser.parse(); // Error here!
+      ParseTree tree = parser.parse();
+      
+      // for (ParseTree t : tree.children) {
+      //   System.out.println("Type: " + t.type);
+      // }
 
-      // Evaluator evaluator = new Evaluator(tree);
-      // evaluator.evaluate();
+      Evaluator evaluator = new Evaluator(tree);
+      evaluator.evaluate();
 
       /* // TESTING HERE
       Pattern tokenPattern = Pattern.compile("[1-9][0-9]*[\t ]*\\.|[1-9][0-9]* +|[A-Za-z]+ +|#[A-Fa-f0-9]{6}|\\.|\"|[\t ]*|%.*\n|\n");
@@ -39,12 +44,18 @@ public class Main{
 
         }
       }
+      List<Token> test = lexer.generateTokens(sb.toString());
+
+       for (Token t : test) {
+        System.out.println(t.toString());
+      }
       // STOPPED TESTING */
 
-      System.out.println("Done with program. " + sb.toString());
+      System.out.println("Done with program.");
+      
+      // System.out.println(sb.toString());
     } catch (Exception e) {
       System.out.println(e.getMessage());
-      System.out.println("WTFFFF?");
     }
   }
 }

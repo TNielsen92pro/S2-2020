@@ -8,8 +8,7 @@ public class ParseTree {
   public ArrayList<ParseTree> children;
 
   ParseTree() {
-    // this.token = token;
-    // children = new ArrayList<>();
+    children = new ArrayList<>();
   }
 
   public TokenType getType() {
