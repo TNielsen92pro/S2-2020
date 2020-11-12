@@ -12,31 +12,31 @@ public class Lexer {
 
   public List<Token> generateTokens(String input) throws java.io.IOException {
     // Maybe switch numbers to \d etc.
-    Pattern tokenPattern = Pattern.compile("[1-9][0-9]*\\.|[1-9][0-9]*([\\n\t ]|(%.*\\n))+|[A-Za-z]+([ \t\\n]|(%.*\\n))|[A-Za-z]+|#[A-Fa-f0-9]{6}|\\.|\"|[ \t\\n]+|\\z|%.*\\n");
+    Pattern tokenPattern = Pattern.compile(
+        "[1-9][0-9]*\\.|[1-9][0-9]*([ \t\\n]|(%.*\\n))+|[A-Za-z]+([ \t\\n]|(%.*\\n))|[A-Za-z]+|#[A-Fa-f0-9]{6}|\\.|\"|[ \t\\n]+|%.*\\n");
     Matcher m = tokenPattern.matcher(input);
     int inputPos = 0;
-    tokens = new ArrayList<Token>(10000);
+    tokens = new ArrayList<Token>();
     int idx = 0;
-    while(m.find()) {
+    while (m.find()) {
       idx++;
       Token result = null;
-	    if (m.start() != inputPos) {
+      if (m.start() != inputPos) {
         tokens.add(new Token(TokenType.INVALID, row)); // throw error? Speed up error findings
       }
       String matchGroup = m.group().toUpperCase();
-      
+
       if (matchGroup.matches("FORW([ \t\\n]|(%.*\\n))+")) {
         result = new Token(TokenType.FORW, row);
-      }
-	    else if (matchGroup.matches("BACK([ \t\\n]|(%.*\\n))+"))
-		    result = new Token(TokenType.BACK, row);
-	    else if (matchGroup.matches("LEFT([ \t\\n]|(%.*\\n))+"))
-		    result = new Token(TokenType.LEFT, row);
-	    else if (matchGroup.matches("RIGHT([ \t\\n]|(%.*\\n))+"))
+      } else if (matchGroup.matches("BACK([ \t\\n]|(%.*\\n))+"))
+        result = new Token(TokenType.BACK, row);
+      else if (matchGroup.matches("LEFT([ \t\\n]|(%.*\\n))+"))
+        result = new Token(TokenType.LEFT, row);
+      else if (matchGroup.matches("RIGHT([ \t\\n]|(%.*\\n))+"))
         result = new Token(TokenType.RIGHT, row);
-        else if (matchGroup.matches("COLOR([ \t\\n]|(%.*\\n))+"))
+      else if (matchGroup.matches("COLOR([ \t\\n]|(%.*\\n))+"))
         result = new Token(TokenType.COLOR, row);
-	    else if (matchGroup.matches("UP([ \t\\n]|(%.*\\n))*"))
+      else if (matchGroup.matches("UP([ \t\\n]|(%.*\\n))*"))
         result = new Token(TokenType.UP, row);
       else if (matchGroup.matches("DOWN([ \t\\n]|(%.*\\n))*"))
         result = new Token(TokenType.DOWN, row);
@@ -45,59 +45,60 @@ public class Lexer {
       else if (matchGroup.matches("[1-9][0-9]*\\.")) {
         // Find number that ends with dot
         String number = matchGroup.replaceAll("[^0-9]", "");
-        result = new Token(TokenType.NUMBER, row, Integer.parseInt(number), true);
-      }
-      else if (matchGroup.matches("[1-9][0-9]*([\\n\t ]|(%.*\\n))+")) {
+        if (number.length() > 6) {
+          result = new Token(TokenType.INVALID, row);
+        } else {
+          result = new Token(TokenType.NUMBER, row, Integer.parseInt(number), true);
+        }
+      } else if (matchGroup.matches("[1-9][0-9]*([\\n\t ]|(%.*\\n))+")) {
         // Number with following whitespace. Might still end with a dot after whitespace
-        String number = matchGroup.replaceAll("[^0-9]", "");  
-        result = new Token(TokenType.NUMBER, row, Integer.parseInt(number), false);
+        String number = matchGroup.replaceAll("[^0-9]", "");
+        if (number.length() > 6) {
+          result = new Token(TokenType.INVALID, row);
+        } else {
+          result = new Token(TokenType.NUMBER, row, Integer.parseInt(number), false);
+        }
       }
-      //else if (matchGroup.matches("\\n"))
-      //  row++;
+      // else if (matchGroup.matches("\\n"))
+      // row++;
       else if (matchGroup.matches("\\."))
         result = new Token(TokenType.DOT, row);
       else if (matchGroup.matches("\""))
         result = new Token(TokenType.CIT, row);
-      else if (matchGroup.matches("\\z"))
-        result = new Token(TokenType.EOF, previousRow);
       else if (matchGroup.matches("REP([ \t\\n]|(%.*\\n))+"))
         result = new Token(TokenType.REP, row);
 
       String printToken = idx + ":" + matchGroup;
 
       // Skip whitespaces
-      if(result == null) {
-        if(matchGroup.matches("[ \t\\n]+") || matchGroup.matches("%.*\\n")) {
+      if (result == null) {
+        if (matchGroup.matches("[ \t\\n]+") || matchGroup.matches("%.*\\n")) {
           printToken = printToken.concat("-" + "Whitespace");
         } else {
           tokens.add(new Token(TokenType.INVALID, row));
           printToken = printToken.concat("-ERROR");
         }
-      } else if(result.type == TokenType.INVALID) {
+      } else if (result.type == TokenType.INVALID) {
+        tokens.add(result);
         printToken = printToken.concat("-INVALID ERROR");
       } else {
         previousRow = row;
         printToken = printToken.concat("-" + result.type);
-        if(result.type == TokenType.NUMBER) {
-          if(result.hasDot) {
+        if (result.type == TokenType.NUMBER) {
+          if (result.hasDot) {
             printToken = printToken.concat(" with dot");
-          }  else {
+          } else {
             printToken = printToken.concat(" with whitespace");
           }
         }
-          tokens.add(result);
+        tokens.add(result);
       }
-     
 
       printToken = printToken.concat("-" + "Row " + row);
 
       String newLines = matchGroup.replaceAll("[^\\n]", "");
-      if(newLines.matches(".*\\n.*")) {
-        for (int i = 0; i < newLines.length(); i++) {
-          if (newLines.charAt(i) == '\n') {
-              row++;
-          }
-      }
+      for (int i = 0; i < newLines.length(); i++) {
+        row++;
       }
 
       // System.out.println(printToken);
@@ -107,10 +108,11 @@ public class Lexer {
     }
 
     if (inputPos != input.length()) {
-	    tokens.add(new Token(TokenType.INVALID, row));
+      // System.out.println("Input != Token.length");
+      tokens.add(new Token(TokenType.INVALID, row));
     }
-    tokens.add(new Token(TokenType.EOF, row)); // Remove? It's already found EOF in matcher right?
-    
+    tokens.add(new Token(TokenType.EOF, previousRow));
+
     return tokens;
   }
 
@@ -122,7 +124,7 @@ public class Lexer {
   public Token peekToken() {
     return tokens.get(currentToken);
   }
-  
+
   // Proceed and fetch next token
   public Token nextToken() {
     ++currentToken;

@@ -1,10 +1,10 @@
 import java.util.Scanner;
-// import java.io.File;
+import java.io.File;
 
-public class Main{
+public class MainLocal{
   public static void main(String[] args) throws java.io.IOException{
     try {
-      Scanner in = new Scanner(System.in);
+      Scanner in = new Scanner(new File("test2.txt"));
       StringBuilder sb  = new StringBuilder();
 
       while(in.hasNext()){

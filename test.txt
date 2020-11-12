@@ -1,19 +1,39 @@
-DOWN .
-% OBS! Denna fil har ett
-% tabb-tecken ('\t') i första
-% REP-satsen.  Omint
-P-satsen.  Omint
+% Space runt punkt valfritt.
+DOWN  . UP.DOWN.  DOWN.
+% Rader kan vara tomma
 
-P-satsen.  OmintP-satsen.  Ominte
-v
-P-satsen.  Omint
-P-satsen.  Omint
-P-satsen.  Omint
-P-satsen.  OmintP-satsen.  Omint
-P-satsen.  OmintP-satsen.  OmintP-satsen.  OmintP-satsen.  OmintP-satsen.  OmintP-satsen.  OmintP-satsen.  OmintP-satsen.  Omint
-% REP-satsen.  Ominte
-% REP-satsen.  Ominte
-% testas korrekt.
-REP 2 REP % raaadbryyyt
-1 "REP 2 REP 2 "FORW 1."
- LEFT 45."
+% radbrytning/space/tabb för
+% att göra koden mer läslig.
+REP 3 REP 90 REP 3 "COLOR #FF0000.
+       FORW 1. LEFT 10."
+       REP 17 COLOR #000000.
+       REP 14 "REP 22 "FORW 2."    FORW       1  .   down%2. 
+       .
+          REP 1 "
+           REP% FOWR SS SA
+3 down.
+                    % PSP SA       
+COLOR #000700.
+
+                 FORW 
+
+
+
+
+                 8
+                 
+.                    "forw     
+            
+             2.     rEp 19  "  forw 1.forw 1.back 2.down.up.UP.up.up.down.   forw 22.bAck 11.  forw 1                 
+                
+                    % sarsa rsasaa      rsrs  
+
+                           .  "   
+             
+             
+              "  
+% Eller oläslig
+           rep 15 "COLOR
+% färgval på gång
+  #111111. FORW  23."
+REP 1 BACK 3.

@@ -7,21 +7,21 @@ public class Parser {
   Parser(Lexer lexer) {
     this.lexer = lexer;
     tree = new ParseTree();
-    tree.children = new ArrayList<ParseTree>(1024);
+    tree.children = new ArrayList<ParseTree>();
   }
 
   public ParseTree parse() throws CustomError {
     if (lexer.peekToken().type == TokenType.EOF) {
       return null;
     } else {
-      tree.children.add(evaluate());
+      tree.children.add(parseCommand());
       lexer.nextToken();
       tree.children.add(parse());
     }
     return tree;
   }
 
-  public ParseTree evaluate() throws CustomError {
+  public ParseTree parseCommand() throws CustomError {
     ParseTree tempTree;
     TokenType type = lexer.peekToken().type;
     switch(type) {
@@ -112,20 +112,21 @@ public class Parser {
     tempTree.value = next.value;
     next = lexer.nextToken();
     if(next.type == TokenType.CIT) {
-      lexer.nextToken();
+      next = lexer.nextToken();
+      if(next.type == TokenType.CIT) throwError();
       while(lexer.peekToken().type != TokenType.CIT) {
-        tempTree.children.add(evaluate());
+        tempTree.children.add(parseCommand());
         lexer.nextToken();
       }
     } else {
-      tempTree.children.add(evaluate());
+      tempTree.children.add(parseCommand());
     }
     return tempTree;
   }
 
   // Throw syntax error at corresponding row
   public void throwError() throws CustomError {
-    throw new CustomError("Syntaxfel på rad " + lexer.peekToken().row);
+    throw new CustomError("Syntaxfel på rad " + (int)(lexer.peekToken().row));
   }
 }
 
