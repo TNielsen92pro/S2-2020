@@ -15,66 +15,117 @@ public class Parser {
       return null;
     } else {
       tree.children.add(evaluate());
+      lexer.nextToken();
       tree.children.add(parse());
     }
     return tree;
   }
 
   public ParseTree evaluate() throws CustomError {
-    ParseTree tree = new ParseTree();
-    switch(lexer.peekToken().type) {
+    ParseTree tempTree;
+    TokenType type = lexer.peekToken().type;
+    switch(type) {
       case FORW:
-        getNumberNode(tree);
+        tempTree = getNumberNode();
       break;
       case BACK:
-        getNumberNode(tree);
+        tempTree = getNumberNode();
       break;
       case LEFT:
-        getNumberNode(tree);
+        tempTree = getNumberNode();
       break;
       case RIGHT:
-        getNumberNode(tree);
+        tempTree = getNumberNode();
       break;
       case DOWN:
-        getStateNode(tree);
+        tempTree = getStateNode();
       break;
       case UP:
-        getStateNode(tree);
+        tempTree = getStateNode();
+      break;
+      case COLOR:
+        tempTree = getColorNode();
+      break;
+      case REP:
+        tempTree = getRepNode();
       break;
       default:
         throwError();
+        tempTree = new ParseTree(); // To avoid initialization warning
     }
-    // Move on to next token every time one is parsed
-    lexer.nextToken();
-    return tree;
+    return tempTree;
   }
 
-  private void getNumberNode(ParseTree tree) throws CustomError {
-    tree.type = lexer.peekToken().type;
+  // Get node for positioning
+  private ParseTree getNumberNode() throws CustomError {
+
+    ParseTree tempTree = new ParseTree();
+    tempTree.type = lexer.peekToken().type;
     Token next = lexer.nextToken();
+
     if(next.type != TokenType.NUMBER) {
-      System.out.println("NaN error");
       throwError();
     }
 
-    tree.value = next.value;
+    tempTree.value = next.value;
     if(!next.hasDot) {
       if(lexer.nextToken().type != TokenType.DOT) {
-        System.out.println("No dot error");
         throwError();
       }
     }
+    return tempTree;
   }
 
-  private void getStateNode(ParseTree tree) throws CustomError {
-    tree.type = lexer.peekToken().type;
+  // Get node for changing pen state
+  private ParseTree getStateNode() throws CustomError {
+    ParseTree tempTree = new ParseTree();
+    tempTree.type = lexer.peekToken().type;
     if(lexer.nextToken().type != TokenType.DOT) {
       throwError();
     }
+    return tempTree;
+  }
+  
+  // Get node for color
+  private ParseTree getColorNode() throws CustomError {
+    ParseTree tempTree = new ParseTree();
+    tempTree.type = lexer.peekToken().type;
+    Token next = lexer.nextToken();
+    if(next.type != TokenType.HEX) {
+      throwError();
+    }
+    tempTree.hex = next.data;
+    if(lexer.nextToken().type != TokenType.DOT) {
+      throwError();
+    }
+    return tempTree;
   }
 
+  // Get rep node
+  private ParseTree getRepNode() throws CustomError {
+    ParseTree tempTree = new ParseTree();
+    tempTree.type = lexer.peekToken().type;
+    Token next = lexer.nextToken();
+    if(next.type != TokenType.NUMBER || next.hasDot) {
+      throwError();
+    }
+    tempTree.value = next.value;
+    next = lexer.nextToken();
+    if(next.type == TokenType.CIT) {
+      lexer.nextToken();
+      while(lexer.peekToken().type != TokenType.CIT) {
+        tempTree.children.add(evaluate());
+        lexer.nextToken();
+      }
+    } else {
+      tempTree.children.add(evaluate());
+    }
+    return tempTree;
+  }
+
+  // Throw syntax error at corresponding row
   public void throwError() throws CustomError {
     throw new CustomError("Syntaxfel på rad " + lexer.peekToken().row);
   }
-
 }
+

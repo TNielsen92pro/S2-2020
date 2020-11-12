@@ -1,4 +1,19 @@
-DOWN. FORW 1. LEFT 90.
-FORW 1. LEFT 90.
-FORW 1. LEFT 90.
-FORW 1. LEFT 90.
+DOWN .
+% OBS! Denna fil har ett
+% tabb-tecken ('\t') i första
+% REP-satsen.  Omint
+P-satsen.  Omint
+
+P-satsen.  OmintP-satsen.  Ominte
+v
+P-satsen.  Omint
+P-satsen.  Omint
+P-satsen.  Omint
+P-satsen.  OmintP-satsen.  Omint
+P-satsen.  OmintP-satsen.  OmintP-satsen.  OmintP-satsen.  OmintP-satsen.  OmintP-satsen.  OmintP-satsen.  OmintP-satsen.  Omint
+% REP-satsen.  Ominte
+% REP-satsen.  Ominte
+% testas korrekt.
+REP 2 REP % raaadbryyyt
+1 "REP 2 REP 2 "FORW 1."
+ LEFT 45."
