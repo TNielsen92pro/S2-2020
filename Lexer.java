@@ -51,7 +51,7 @@ public class Lexer {
           result = new Token(TokenType.NUMBER, row, Integer.parseInt(number), true);
         }
       } else if (matchGroup.matches("[1-9][0-9]*([\\n\t ]|(%.*\\n))+")) {
-        // Number with following whitespace. Might still end with a dot after whitespace
+        // Number with following whitespace
         String number = matchGroup.replaceAll("[^0-9]", "");
         if (number.length() > 6) {
           result = new Token(TokenType.INVALID, row);
