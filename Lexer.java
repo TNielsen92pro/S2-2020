@@ -59,20 +59,20 @@ public class Lexer {
           result = new Token(TokenType.NUMBER, row, Integer.parseInt(number), false);
         }
       }
-      // else if (matchGroup.matches("\\n"))
-      // row++;
       else if (matchGroup.matches("\\."))
         result = new Token(TokenType.DOT, row);
       else if (matchGroup.matches("\""))
         result = new Token(TokenType.CIT, row);
       else if (matchGroup.matches("REP([ \t\\n]|(%.*\\n))+"))
         result = new Token(TokenType.REP, row);
+      // else if (matchGroup.matches("\\n"))
+      // row++;
 
       String printToken = idx + ":" + matchGroup;
 
       // Skip whitespaces
       if (result == null) {
-        if (matchGroup.matches("[ \t\\n]+") || matchGroup.matches("%.*\\n")) {
+        if (matchGroup.matches("([\\n\t ]|(%.*\\n))+")) {
           printToken = printToken.concat("-" + "Whitespace");
         } else {
           tokens.add(new Token(TokenType.INVALID, row));
