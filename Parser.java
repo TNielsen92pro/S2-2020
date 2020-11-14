@@ -126,7 +126,7 @@ public class Parser {
 
   // Throw syntax error at corresponding row
   public void throwError() throws CustomError {
-    throw new CustomError("Syntaxfel på rad " + (int)(lexer.peekToken().row));
+    throw new CustomError("Syntaxfel på rad " + lexer.peekToken().row);
   }
 }
 
