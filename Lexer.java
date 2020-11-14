@@ -14,8 +14,8 @@ public class Lexer {
     // Maybe switch numbers to \d etc.
     String whiteSpace = "([ \\t\\n]|(%.*\\n))";
     Pattern tokenPattern = Pattern.compile(
-        "0*[1-9][0-9]*\\." + "|" + 
-        "0*[1-9][0-9]*" + whiteSpace + "+" + "|" +
+        "[1-9][0-9]*\\." + "|" + 
+        "[1-9][0-9]*" + whiteSpace + "|" +
         "[A-Za-z]+" + whiteSpace + "|" +
         "[A-Za-z]+" + "|" +
         "#[A-Fa-f0-9]{6}" + "|" +
@@ -37,8 +37,8 @@ public class Lexer {
     String upMatch = "UP" + whiteSpace + "*";
     String downMatch = "DOWN" + whiteSpace + "*";
     String hexMatch = "#[A-F0-9]{6}";
-    String dotNumberMatch = "0*[1-9][0-9]*\\.";
-    String numberMatch = "0*[1-9][0-9]*" + whiteSpace + "+";
+    String dotNumberMatch = "[1-9][0-9]*\\.";
+    String numberMatch = "[1-9][0-9]*" + whiteSpace + "+";
 
     while (m.find()) {
       idx++;
@@ -67,9 +67,7 @@ public class Lexer {
       else if (matchGroup.matches(dotNumberMatch)) {
         // Find number that ends with dot
         String number = matchGroup.replaceAll("[^0-9]", "");
-        int i = 0;
-        while(number.charAt(i) == '0') i++;
-        if (number.length() - i > 6) {
+        if (number.length() > 6) {
           result = new Token(TokenType.INVALID, row);
         } else {
           result = new Token(TokenType.NUMBER, row, Integer.parseInt(number), true);
@@ -77,9 +75,7 @@ public class Lexer {
       } else if (matchGroup.matches(numberMatch)) {
         // Number with following whitespace
         String number = matchGroup.replaceAll("[^0-9]", "");
-        int i = 0;
-        while(number.charAt(i) == '0') i++;
-        if (number.length() - i > 6) {
+        if (number.length() > 6) {
           result = new Token(TokenType.INVALID, row);
         } else {
           result = new Token(TokenType.NUMBER, row, Integer.parseInt(number), false);
